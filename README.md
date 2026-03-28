@@ -1,5 +1,7 @@
 # AISec — 从AI到安全学习笔记
 
+> 📥 **配套教材下载**：[LeeDL Tutorial（李宏毅深度学习教程）](https://github.com/datawhalechina/leedl-tutorial/releases)
+
 > "数学不是考试。考试很难，但我们学的是概念，概念没有那么难。"
 
 ---
