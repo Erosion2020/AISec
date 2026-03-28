@@ -1,0 +1,3 @@
+# PDF 教材文件体积过大，不纳入版本控制
+# 原始文件来源：https://github.com/datawhalechina/leedl-tutorial
+*.pdf
