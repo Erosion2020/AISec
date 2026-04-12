@@ -2,3 +2,4 @@
 # 原始文件来源：https://github.com/datawhalechina/leedl-tutorial
 *.pdf
 .claude/settings.local.json
+.claude/ml-learner-profile.md

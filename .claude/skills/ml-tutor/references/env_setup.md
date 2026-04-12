@@ -1,120 +1,185 @@
 # ml-tutor 环境配置指南
 
-当运行 `extract_pdf_pages.py` 失败（找不到 python、缺少依赖等）时，查阅本文档。
-根据用户系统上可用的工具，选择对应方案。所有 pip 安装均使用清华镜像源。
+运行 `extract_pdf_pages.py` 时需要有可用的 Python 解释器和依赖包。
+本文档分两部分：**检测已有环境**（主动查找，优先复用）和**创建新环境**（兜底创建）。
+所有 pip 安装均使用清华镜像源。
 
 ---
 
-## 检测可用工具
+## 一、检测已有环境（优先级顺序）
 
-依次检测以下命令是否存在，按 conda → uv → pip 优先级选择方案：
+按以下顺序检测，找到第一个可用的就停止，记为 `<PYTHON>`。
+
+### 1. conda — ml-tutor 环境
 
 ```bash
-conda --version
-uv --version
-pip --version   # 或 pip3 --version
+conda env list 2>/dev/null | grep -q "ml-tutor"
 ```
 
----
+- **存在** → 获取解释器绝对路径（**不要用 `conda run`**，Windows 上存在编码 bug）：
+  ```bash
+  # 获取 conda base 目录
+  conda info --base
+  # Windows 解释器路径：<base>\envs\ml-tutor\python.exe
+  # Linux / macOS 解释器路径：<base>/envs/ml-tutor/bin/python
+  ```
+  Windows 上运行脚本时加 `PYTHONUTF8=1` 前缀，避免控制台编码问题：
+  ```bash
+  # Windows（在 bash/Git Bash 中）
+  PYTHONUTF8=1 "<base>\envs\ml-tutor\python.exe" scripts/extract_pdf_pages.py ...
+  # Linux / macOS
+  "<base>/envs/ml-tutor/bin/python" scripts/extract_pdf_pages.py ...
+  ```
+- **conda 未安装 / 环境不存在** → 继续下一步
 
-## 方案 A：conda（优先）
+### 2. uv — ml-tutor 环境
 
-适用：系统有 conda（Anaconda / Miniconda），但可能没有全局 python。
+先检查 uv 是否存在：
 
 ```bash
-# 1. 创建 ml-tutor 环境，指定 Python 版本，使用清华 conda 源
-conda create -n ml-tutor python=3.11 -y -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+uv --version 2>/dev/null
+```
 
-# 2. 找到该环境的 python 解释器路径（不用激活环境）
-#    Linux / macOS：
-conda run -n ml-tutor which python
-#    Windows：
-conda run -n ml-tutor where python
+如果 uv 存在，检查 ml-tutor 环境：
 
-# 3. 用该解释器安装依赖（清华 PyPI 源）
-conda run -n ml-tutor pip install pdfplumber --index-url https://pypi.tuna.tsinghua.edu.cn/simple
+```bash
+# Windows
+test -f "%LOCALAPPDATA%\uv\envs\ml-tutor\Scripts\python.exe"
+
+# Linux / macOS
+test -f "$HOME/.local/share/uv/envs/ml-tutor/bin/python"
+```
+
+- **存在** → 使用对应路径的 python 解释器
+- **uv 未安装 / 环境不存在** → 继续下一步
+
+### 3. 项目内 venv
+
+在当前项目根目录查找标准 venv 目录（`.venv`、`venv`、`env`）：
+
+```bash
+# Windows — 依次检查
+.venv\Scripts\python.exe
+venv\Scripts\python.exe
+env\Scripts\python.exe
+
+# Linux / macOS — 依次检查
+.venv/bin/python
+venv/bin/python
+env/bin/python
+```
+
+- **找到** → 使用该路径的 python 解释器
+- **未找到** → 进入下一节"创建新环境"
+
+---
+
+## 二、创建新环境（兜底策略）
+
+没有找到可用环境时，按 conda → uv → python -m venv 顺序尝试创建。
+
+### 方案 A：conda（优先）
+
+```bash
+# 1. 创建 ml-tutor 环境（使用清华 conda 源）
+conda create -n ml-tutor python=3.11 -y \
+  -c https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+
+# 2. 获取解释器绝对路径（避免 conda run 在 Windows 上的编码 bug）
+conda info --base
+# 输出示例（Windows）：C:\Users\yourname\.conda
+# 输出示例（Linux/macOS）：/home/yourname/miniconda3
+
+# 根据上面的输出拼接路径：
+# Windows：
+#   解释器：<base>\envs\ml-tutor\python.exe
+#   pip：   <base>\envs\ml-tutor\Scripts\pip.exe
+# Linux / macOS：
+#   解释器：<base>/envs/ml-tutor/bin/python
+#   pip：   <base>/envs/ml-tutor/bin/pip
+
+# 3. 安装核心依赖（用绝对路径的 pip，清华 PyPI 源）
+# Windows（将 <base> 替换为实际路径）：
+"<base>\envs\ml-tutor\Scripts\pip.exe" install pdfplumber \
+  --index-url https://pypi.tuna.tsinghua.edu.cn/simple
+# Linux / macOS：
+# <base>/envs/ml-tutor/bin/pip install pdfplumber \
+#   --index-url https://pypi.tuna.tsinghua.edu.cn/simple
 
 # 4. 可选：安装 OCR 支持（失败不影响基础功能）
-conda run -n ml-tutor pip install pdf2image pytesseract --index-url https://pypi.tuna.tsinghua.edu.cn/simple
+# Windows：
+"<base>\envs\ml-tutor\Scripts\pip.exe" install pdf2image pytesseract \
+  --index-url https://pypi.tuna.tsinghua.edu.cn/simple
+# Linux / macOS：
+# <base>/envs/ml-tutor/bin/pip install pdf2image pytesseract \
+#   --index-url https://pypi.tuna.tsinghua.edu.cn/simple
 
-# 5. 用环境内的 python 运行提取脚本
-conda run -n ml-tutor python scripts/extract_pdf_pages.py "<pdf路径>" <起始页> <结束页>
+# 创建完成后，使用绝对路径调用解释器（不要用 conda run）：
+# Windows：  "<base>\envs\ml-tutor\python.exe" script.py
+# Linux/mac：<base>/envs/ml-tutor/bin/python script.py
 ```
 
-**注意**：`conda run -n ml-tutor python ...` 无需激活环境，直接用指定环境的解释器执行，适合脚本调用。
-
-如果环境已存在，跳过第 1 步，直接从第 5 步执行。检测是否已存在：
+### 方案 B：uv
 
 ```bash
-conda env list | grep ml-tutor
-```
-
----
-
-## 方案 B：uv
-
-适用：系统有 uv，没有 conda。
-
-```bash
-# 1. 创建虚拟环境（uv 会自动下载所需 Python 版本）
+# 1. 创建虚拟环境（uv 会自动下载所需 Python）
+#    Linux / macOS：
 uv venv ~/.local/share/uv/envs/ml-tutor --python 3.11
+#    Windows：
+#    uv venv "%LOCALAPPDATA%\uv\envs\ml-tutor" --python 3.11
 
-# 2. 安装依赖（清华源）
+# 2. 安装核心依赖（清华 PyPI 源）
+#    Linux / macOS：
 uv pip install pdfplumber \
   --python ~/.local/share/uv/envs/ml-tutor/bin/python \
   --index-url https://pypi.tuna.tsinghua.edu.cn/simple
-
-# Windows 路径示例：
-# uv pip install pdfplumber \
-#   --python %LOCALAPPDATA%\uv\envs\ml-tutor\Scripts\python.exe \
-#   --index-url https://pypi.tuna.tsinghua.edu.cn/simple
+#    Windows：
+#    uv pip install pdfplumber \
+#      --python "%LOCALAPPDATA%\uv\envs\ml-tutor\Scripts\python.exe" \
+#      --index-url https://pypi.tuna.tsinghua.edu.cn/simple
 
 # 3. 可选：安装 OCR 支持
+#    Linux / macOS：
 uv pip install pdf2image pytesseract \
   --python ~/.local/share/uv/envs/ml-tutor/bin/python \
   --index-url https://pypi.tuna.tsinghua.edu.cn/simple
 
-# 4. 运行提取脚本
-~/.local/share/uv/envs/ml-tutor/bin/python scripts/extract_pdf_pages.py "<pdf路径>" <起始页> <结束页>
-# Windows：
-# %LOCALAPPDATA%\uv\envs\ml-tutor\Scripts\python.exe scripts/extract_pdf_pages.py "<pdf路径>" <起始页> <结束页>
+# 创建完成后，使用对应路径的 python 解释器运行脚本
 ```
 
-如果环境已存在，跳过第 1~3 步，直接运行第 4 步。
-
----
-
-## 方案 C：pip / venv
-
-适用：系统有 pip/pip3 和 python，没有 conda 和 uv。
+### 方案 C：python -m venv（最终兜底）
 
 ```bash
 # 1. 创建 venv
+#    Linux / macOS：
 python -m venv ~/.local/share/ml-tutor-venv
-# Windows：
-# python -m venv %LOCALAPPDATA%\ml-tutor-venv
+#    Windows：
+#    python -m venv "%LOCALAPPDATA%\ml-tutor-venv"
 
-# 2. 安装依赖（清华源）
-~/.local/share/ml-tutor-venv/bin/pip install pdfplumber --index-url https://pypi.tuna.tsinghua.edu.cn/simple
-# Windows：
-# %LOCALAPPDATA%\ml-tutor-venv\Scripts\pip install pdfplumber --index-url https://pypi.tuna.tsinghua.edu.cn/simple
+# 2. 安装核心依赖（清华 PyPI 源）
+#    Linux / macOS：
+~/.local/share/ml-tutor-venv/bin/pip install pdfplumber \
+  --index-url https://pypi.tuna.tsinghua.edu.cn/simple
+#    Windows：
+#    "%LOCALAPPDATA%\ml-tutor-venv\Scripts\pip" install pdfplumber \
+#      --index-url https://pypi.tuna.tsinghua.edu.cn/simple
 
 # 3. 可选：安装 OCR 支持
-~/.local/share/ml-tutor-venv/bin/pip install pdf2image pytesseract --index-url https://pypi.tuna.tsinghua.edu.cn/simple
+#    Linux / macOS：
+~/.local/share/ml-tutor-venv/bin/pip install pdf2image pytesseract \
+  --index-url https://pypi.tuna.tsinghua.edu.cn/simple
 
-# 4. 运行提取脚本
-~/.local/share/ml-tutor-venv/bin/python scripts/extract_pdf_pages.py "<pdf路径>" <起始页> <结束页>
-# Windows：
-# %LOCALAPPDATA%\ml-tutor-venv\Scripts\python.exe scripts/extract_pdf_pages.py "<pdf路径>" <起始页> <结束页>
+# 创建完成后，使用 ~/.local/share/ml-tutor-venv/bin/python
+# Windows："%LOCALAPPDATA%\ml-tutor-venv\Scripts\python.exe"
 ```
 
 ---
 
-## 所有方案都不可用
+## 三、所有方案都不可用
 
-如果 conda、uv、pip 均未安装，告知用户：
+如果 conda、uv、python 均未安装，告知用户：
 
-> 我在你的系统上没有检测到 conda、uv 或 pip，无法自动配置环境。
+> 我在你的系统上没有检测到 conda、uv 或 python，无法自动配置环境。
 > 推荐安装 conda（Miniconda）或 uv，然后再试：
 > - Miniconda：https://docs.conda.io/en/latest/miniconda.html
 > - uv：https://docs.astral.sh/uv/getting-started/installation/
@@ -123,7 +188,7 @@ python -m venv ~/.local/share/ml-tutor-venv
 
 ---
 
-## OCR 依赖说明
+## 四、OCR 依赖说明
 
 `pdf2image` 和 `pytesseract` 是可选的，只在遇到图片型 PDF 页时才需要。
 除了 pip 包，还需要系统级安装 Tesseract-OCR：

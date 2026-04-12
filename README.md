@@ -3,7 +3,7 @@
 > 📥 **配套教材下载**：[LeeDL Tutorial（李宏毅深度学习教程）](https://github.com/datawhalechina/leedl-tutorial/releases)
 
 > "在机器学习中，你只需要感受数学的工程魅力~"
-
+$$L(\theta) \approx L(\theta') + L'(\theta') \cdot (\theta - \theta') + \frac{1}{2} \cdot L''(\theta') \cdot (\theta - \theta')^2$$
 ## 启用机器学习助教
 
 本项目内置了一个关于机器学习的SKILL助教，把你不会的知识丢给它，它将带你轻松学习数学难题~
