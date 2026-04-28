@@ -1,8 +1,8 @@
 # AISec — 从机器学习到 AI 安全
 
-配套教材：[LeeDL Tutorial（李宏毅深度学习）](https://github.com/datawhalechina/leedl-tutorial/releases)
+配套教材：[LeeDL Tutorial（李宏毅机器学习）](https://github.com/datawhalechina/leedl-tutorial/releases)
 
-本仓库跟着李宏毅深度学习课程走，从线性模型一路到 Transformer、生成模型，最终落到 AI 安全的应用场景。内置了一个 Claude Code Skill 助教 `ml-tutor`，数学基础初中水平即可上手——把不懂的概念或 PDF 页码直接丢给它就行。
+本仓库依赖于李宏毅教授的机器学习课程，从线性模型一路到 Transformer、生成模型，最终落到 AI 安全的应用场景。内置了一个 Claude Code Skill 助教 `ml-tutor`，数学基础初中水平即可上手——把不懂的概念或 PDF 页码直接丢给它就行。
 
 ---
 
@@ -75,5 +75,5 @@ claude
 
 ## 致谢
 
-- **李宏毅老师** — 台湾大学教授，课程主页：[speech.ee.ntu.edu.tw/~hylee/ml](https://speech.ee.ntu.edu.tw/~hylee/ml/)，YouTube：[@HungyiLeeNTU](https://www.youtube.com/@HungyiLeeNTU)
+- **李宏毅老师** — 台湾大学教授，个人主页：[speech.ee.ntu.edu.tw/~tlkagk/](http://speech.ee.ntu.edu.tw/~tlkagk/)，YouTube：[@HungyiLeeNTU](https://www.youtube.com/@HungyiLeeNTU)
 - **datawhalechina / leedl-tutorial** — 教材整理来源：[github.com/datawhalechina/leedl-tutorial](https://github.com/datawhalechina/leedl-tutorial)
