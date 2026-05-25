@@ -110,6 +110,35 @@ claude
 
 ---
 
+## 经典论文
+
+<details>
+<summary><strong>必读论文</strong></summary>
+
+<br>
+
+- [Attention Is All You Need](paper/1706.03762v7.pdf) — Transformer 架构奠基之作
+- [DeepSeek V4 技术报告](paper/DeepSeek_V4.pdf) — 1.6T 参数 MoE，100 万上下文
+- [Conditional Memory via Scalable Lookup](paper/2601.07372v1.pdf) — Engram，O(1) 查表的条件记忆模块
+
+</details>
+
+<details>
+<summary><strong>经典论文</strong></summary>
+
+<br>
+
+- [Sequence Level Training with Recurrent Neural Networks](https://arxiv.org/abs/1511.06732) — MIXER，序列级训练与 REINFORCE
+- [The Curious Case of Neural Text Degeneration](https://arxiv.org/abs/1904.09751) — Nucleus Sampling (top-p)，解决文本生成退化
+- [Parallel Scheduled Sampling](https://arxiv.org/abs/1906.04331) — 并行化 Scheduled Sampling
+- [Scheduled Sampling for Transformers](https://arxiv.org/abs/1906.07651) — 将 Scheduled Sampling 引入 Transformer
+- [On Layer Normalization in the Transformer Architecture](https://arxiv.org/abs/2002.04745) — Pre-LN vs Post-LN 深度分析
+- [Rethinking and Improving NLG with Layer-Wise Multi-View Decoding](https://arxiv.org/abs/2005.08081) — 逐层多视图解码提升生成质量
+
+</details>
+
+---
+
 ## 数学内容专栏
 
 ### 线性代数（3Blue1Brown）
