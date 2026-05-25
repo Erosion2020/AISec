@@ -2,5 +2,7 @@
 # 原始文件来源：https://github.com/datawhalechina/leedl-tutorial
 *.pdf
 !paper/1706.03762v7.pdf
+!paper/DeepSeek_V4.pdf
+!paper/2601.07372v1.pdf
 .claude/settings.local.json
 .claude/ml-learner-profile.md
