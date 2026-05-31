@@ -6,3 +6,12 @@
 !paper/2601.07372v1.pdf
 .claude/settings.local.json
 .claude/ml-learner-profile.md
+code/work*/*.csv
+code/work*/models
+code/work*/runs
+
+# Python 运行时产物
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store

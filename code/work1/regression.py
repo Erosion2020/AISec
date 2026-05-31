@@ -204,7 +204,7 @@ same_seed(config['seed'])
 # 测试集大小(test_data size）: 1078 x 117 (没有label (last day's positive rate))
 pd.set_option('display.max_column', 200) # 设置显示数据的列数
 train_df, test_df = pd.read_csv('./covid.train.csv'), pd.read_csv('./covid.test.csv')
-display(train_df.head(3)) # 显示前三行的样本
+print(train_df.head(3)) # 显示前三行的样本
 train_data, test_data = train_df.values, test_df.values
 del train_df, test_df # 删除数据减少内存占用
 train_data, valid_data = train_valid_split(train_data, config['valid_ratio'], config['seed'])
