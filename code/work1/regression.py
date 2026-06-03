@@ -27,12 +27,13 @@ def same_seed(seed):
     '''
     设置随机种子(便于复现)
     '''
-    torch.backends.cudnn.deterministic = True
-    torch.backends.cudnn.benchmark = False
     np.random.seed(seed)
     torch.manual_seed(seed)
     if torch.cuda.is_available():
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
         torch.cuda.manual_seed_all(seed)
+    if torch.mps.is_available(): torch.mps.manual_seed(seed)
     print(f'Set Seed = {seed}')
 
 
@@ -182,7 +183,12 @@ def trainer(train_loader, valid_loader, model, config, device):
             return
         
 
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
+device = 'cpu'
+if torch.mps.is_available():
+    device = 'mps'
+elif torch.cuda.is_available():
+    device = 'cuda'
+
 config = {
     'seed': 5201314,      # 随机种子，可以自己填写. :)
     'select_all': True,   # 是否选择全部的特征
@@ -242,6 +248,6 @@ def save_pred(preds, file):
             writer.writerow([i, p])
 
 model = My_Model(input_dim=x_train.shape[1]).to(device)
-model.load_state_dict(torch.load(config['save_path']))
+model.load_state_dict(torch.load(config['save_path'], map_location=device, weights_only=True))
 preds = predict(test_loader, model, device) 
 save_pred(preds, 'pred.csv')      
