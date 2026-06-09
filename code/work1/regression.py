@@ -209,7 +209,7 @@ same_seed(config['seed'])
 # 训练集大小(train_data size) : 2699 x 118 (id + 37 states + 16 features x 5 days) 
 # 测试集大小(test_data size）: 1078 x 117 (没有label (last day's positive rate))
 pd.set_option('display.max_column', 200) # 设置显示数据的列数
-train_df, test_df = pd.read_csv('./covid.train.csv'), pd.read_csv('./covid.test.csv')
+train_df, test_df = pd.read_csv('./data/covid.train.csv'), pd.read_csv('./data/covid.test.csv')
 print(train_df.head(3)) # 显示前三行的样本
 train_data, test_data = train_df.values, test_df.values
 del train_df, test_df # 删除数据减少内存占用
@@ -250,4 +250,4 @@ def save_pred(preds, file):
 model = My_Model(input_dim=x_train.shape[1]).to(device)
 model.load_state_dict(torch.load(config['save_path'], map_location=device, weights_only=True))
 preds = predict(test_loader, model, device) 
-save_pred(preds, 'pred.csv')      
+save_pred(preds, './data/pred.csv')      

@@ -9,6 +9,15 @@
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}/code/work1",
             "python": "${command:python.interpreterPath}"
+        },
+        {
+            "name": "Debug classification.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/code/work2/classification.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/code/work2",
+            "python": "${command:python.interpreterPath}"
         }
     ]
 }

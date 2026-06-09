@@ -6,7 +6,7 @@
 !paper/2601.07372v1.pdf
 .claude/settings.local.json
 .claude/ml-learner-profile.md
-code/work*/*.csv
+code/work*/data
 code/work*/models
 code/work*/runs
 
